@@ -1,0 +1,12 @@
+# Ignore the virtual environment
+age_gender_env/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore MacOS system files
+.DS_Store
+
+

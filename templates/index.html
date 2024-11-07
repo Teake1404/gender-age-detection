@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age and Gender Detection</title>
+    <style>
+        /* General reset and body styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        /* Main container styling */
+        .container {
+            text-align: center;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        label {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        label:hover {
+            background-color: #45a049;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #555;
+        }
+        /* Flexbox layout for image and action plan */
+        .flex-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            align-items: flex-start;
+        }
+        .uploaded-image {
+            max-width: 200px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .action-plan {
+            flex: 1;
+            padding: 10px;
+            background-color: #e0f7fa;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload and Display Image</h1>
+        
+        <form action="/" method="post" enctype="multipart/form-data">
+            <label for="file-upload">Choose a file</label>
+            <input type="file" name="file" id="file-upload" accept="image/*,video/*" required>
+            <button type="submit">Upload and Analyze</button>
+        </form>
+
+        {% if age and gender %}
+            <div class="results">
+                <h2>Results</h2>
+                <p>Predicted Age: {{ age }}</p>
+                <p>Predicted Gender: {{ gender }}</p>
+            </div>
+
+            <!-- Flex container to align image and action plan side by side -->
+            <div class="flex-container">
+                <!-- Display the uploaded image -->
+                {% if filename.lower().endswith(('.jpg', '.jpeg', '.png')) %}
+                    <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Uploaded Image" class="uploaded-image">
+                {% endif %}
+
+                <!-- Action Plan Section Based on Age -->
+                <div class="action-plan">
+                    <h3>Action Plan to Look Younger</h3>
+                    <p id="age-tips"></p>
+                </div>
+            </div>
+
+            <script>
+                // Display tips based on age
+                const age = {{ age }};
+                const ageTips = document.getElementById("age-tips");
+
+                if (age < 30) {
+                    ageTips.innerHTML = "<ul><li>Wear sunscreen daily to protect against UV damage.</li><li>Stay hydrated to keep skin healthy.</li><li>Eat a balanced diet rich in antioxidants.</li></ul>";
+                } else if (age < 40) {
+                    ageTips.innerHTML = "<ul><li>Consider using products with retinol for skin renewal.</li><li>Moisturize regularly to prevent dryness.</li><li>Get 7-8 hours of quality sleep each night.</li></ul>";
+                } else if (age < 50) {
+                    ageTips.innerHTML = "<ul><li>Use vitamin C serum to boost collagen production.</li><li>Exfoliate regularly for brighter skin.</li><li>Incorporate strength training to maintain muscle tone.</li></ul>";
+                } else {
+                    ageTips.innerHTML = "<ul><li>Consult a healthcare provider about hormone levels.</li><li>Incorporate healthy fats into your diet for skin health.</li><li>Stay active to improve circulation.</li></ul>";
+                }
+            </script>
+        {% endif %}
+    </div>
+</body>
+</html>
+
