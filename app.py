@@ -1,25 +1,31 @@
 import os
 import cv2
 import numpy as np
-from deepface import DeepFace
 from collections import Counter
 from flask import Flask, render_template, request, redirect, url_for, flash
 import uuid
-
-
+from PIL import Image  # Import PIL for image preprocessing
 
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Set a secret key for flashing messages
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static/uploads')
-print("Upload folder:", app.config['UPLOAD_FOLDER'])
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # Limit uploads to 2MB
 
+print("Upload folder:", app.config['UPLOAD_FOLDER'])
 
 # Ensure the upload folder exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 def analyze_image(image_path):
-    # Load the image
+    from deepface import DeepFace  # Lazy import
+
+    # Preprocess image
+    img = Image.open(image_path)
+    img = img.resize((224, 224))  # Resize to reduce memory usage
+    img.save(image_path)  # Overwrite the reduced-size image
+
+    # Load the preprocessed image
     image = cv2.imread(image_path)
     if image is None:
         print("Error: Could not load image.")
@@ -36,6 +42,8 @@ def analyze_image(image_path):
         return None
 
 def analyze_video(video_path):
+    from deepface import DeepFace  # Lazy import
+
     # Open the video file
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
@@ -84,11 +92,9 @@ def index():
 
         if file:
             # Save the file with a unique name
-            # os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
             filename = str(uuid.uuid4()) + "_" + file.filename
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
-
 
             # Determine if the file is an image or video
             if filename.lower().endswith(('.jpg', '.jpeg', '.png')):
