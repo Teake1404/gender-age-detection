@@ -2,7 +2,8 @@ flask
 opencv-python-headless
 deepface
 numpy
-tensorflow 
 keras
 tf-keras
+tensorflow
+
 

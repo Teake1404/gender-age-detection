@@ -6,6 +6,8 @@ from collections import Counter
 from flask import Flask, render_template, request, redirect, url_for, flash
 import uuid
 
+
+
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Set a secret key for flashing messages
@@ -106,5 +108,5 @@ def index():
 
     return render_template('index.html')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
